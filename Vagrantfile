@@ -18,8 +18,8 @@ Vagrant.configure("2") do |config|
 			yum install mc -y
 			yum install git -y
 			
-			firewall-cmd --zone=public --add-port=80/tcp --permament
-			firewall-cmd -reload
+			firewall-cmd --zone=public --add-port=80/tcp --permanent
+			firewall-cmd --reload
 			systemctl stop firewald			
 
 			rm -rf /git
@@ -54,16 +54,16 @@ Vagrant.configure("2") do |config|
 		
 		(2..$TOMCAT_COUNT).each do |i|
 			apache.vm.provision "shell", inline: <<-SHELL
-				sed -i '/balance/s/$/, tomcat#{i}/' /etc/httpd/conf/workers.properties
+				sed -i '/balance/s/$/,tomcat#{i}/' /etc/httpd/conf/workers.properties
 			SHELL
 		end	
-				
-		apache.vm.provision "shell", inline: <<-SHELL
-				echo 'worker.lb.tomcat#{i}.host=localhost' >> /etc/httpd/conf/workers.properties
-				echo 'worker.lb.tomcat#{i}.port=8009' >> /etc/httpd/conf/workers.properties
-				echo 'worker.lb.tomcat#{i}.type=ajp13' >> /etc/httpd/conf/workers.properties
-		SHELL
-		
+		(1..$TOMCAT_COUNT).each do |i|	
+			apache.vm.provision "shell", inline: <<-SHELL
+					echo 'worker.lb.tomcat#{i}.host=localhost' >> /etc/httpd/conf/workers.properties
+					echo 'worker.lb.tomcat#{i}.port=8009' >> /etc/httpd/conf/workers.properties
+					echo 'worker.lb.tomcat#{i}.type=ajp13' >> /etc/httpd/conf/workers.properties
+			SHELL
+		end
 		(1..$TOMCAT_COUNT).each do |i|
 			apache.vm.provision "shell", inline: <<-SHELL
 				echo -e "192.168.0.#{10+i}	tomcat#{i}" >> /etc/hosts
@@ -93,12 +93,12 @@ Vagrant.configure("2") do |config|
 
 				sed -i '/apache1/d' /etc/hosts
 				echo -e '192.168.0.10	apache1' >> /etc/hosts
-				
-				#sed -i /<Connector port="8009" protocol="AJP/1.3" redirectPort="8443 />" / /usr/share/tomcat/conf/server.xml
+
+				sed -i 's/.*Engine name="Catalina"  defaultHost="localhost" *./<Engine name="Catalina" defaultHost="localhost" jvmRoute="tomcat#{i}">/' /usr/share/tomcat/conf/server.xml
 				
 				mkdir /usr/share/tomcat/webapps/1
 				rm /usr/share/tomcat/webapps/1/index.html
-				echo '<html><head></head><body><h1>Tomcat#{i}</h1></body></html>' >> /usr/share/tomcat/webapps/1/index.html			
+				echo '<h1>Tomcat#{i}</h1>' >> /usr/share/tomcat/webapps/1/index.html			
 
 				/etc/init.d/network restart
 				systemctl enable tomcat
