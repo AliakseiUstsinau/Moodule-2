@@ -59,9 +59,9 @@ Vagrant.configure("2") do |config|
 		end	
 		(1..$TOMCAT_COUNT).each do |i|	
 			apache.vm.provision "shell", inline: <<-SHELL
-					echo 'worker.lb.tomcat#{i}.host=localhost' >> /etc/httpd/conf/workers.properties
-					echo 'worker.lb.tomcat#{i}.port=8009' >> /etc/httpd/conf/workers.properties
-					echo 'worker.lb.tomcat#{i}.type=ajp13' >> /etc/httpd/conf/workers.properties
+					echo 'worker.tomcat#{i}.host=localhost' >> /etc/httpd/conf/workers.properties
+					echo 'worker.tomcat#{i}.port=8009' >> /etc/httpd/conf/workers.properties
+					echo 'worker.tomcat#{i}.type=ajp13' >> /etc/httpd/conf/workers.properties
 			SHELL
 		end
 		(1..$TOMCAT_COUNT).each do |i|
