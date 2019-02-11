@@ -42,7 +42,7 @@ Vagrant.configure("2") do |config|
 			echo 'JkShmFile /tmp/shm' >> /etc/httpd/conf/httpd.conf
 			echo 'JkLogFile logs/mod_jk.log' >> /etc/httpd/conf/httpd.conf
 			echo 'JkLogLevel info' >> /etc/httpd/conf/httpd.conf
-			echo 'JkMount /tomcat* lb' >> /etc/httpd/conf/httpd.conf
+			echo 'JkMount /1 lb' >> /etc/httpd/conf/httpd.conf
 			
 			# workers.properties
 
