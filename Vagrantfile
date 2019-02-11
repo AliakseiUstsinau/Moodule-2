@@ -94,7 +94,7 @@ Vagrant.configure("2") do |config|
 				sed -i '/apache1/d' /etc/hosts
 				echo -e '192.168.0.10	apache1' >> /etc/hosts
 
-				sed -i 's/.*Engine name="Catalina"  defaultHost="localhost" *./<Engine name="Catalina" defaultHost="localhost" jvmRoute="tomcat#{i}">/' /usr/share/tomcat/conf/server.xml
+				sed -i 's/.*Engine name="Catalina"  defaultHost="localhost"*./<Engine name="Catalina" defaultHost="localhost" jvmRoute="tomcat#{i}">/' /usr/share/tomcat/conf/server.xml
 				
 				mkdir /usr/share/tomcat/webapps/1
 				rm /usr/share/tomcat/webapps/1/index.html
