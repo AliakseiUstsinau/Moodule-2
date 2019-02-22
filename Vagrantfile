@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
 			
 			firewall-cmd --zone=public --add-port=80/tcp --permanent
 			firewall-cmd --reload
-			systemctl stop firewald			
+			systemctl stop firewalld			
 
 			rm -rf /git
 			git clone https://github.com/AliakseiUstsinau/Moodule-2 /git
@@ -88,7 +88,7 @@ Vagrant.configure("2") do |config|
 			tomcat.vm.network "public_network", ip: "192.168.0.#{10+i}"
 			tomcat.vm.provision "shell", inline: <<-SHELL
 				yum install mc -y
-				yum install java-1.8.8-openjdk -y
+				yum install java-1.8.0-openjdk -y
 				yum install tomcat tomcat-webapps tomcat-admin-webapps -y
 
 				sed -i '/apache1/d' /etc/hosts
@@ -101,6 +101,7 @@ Vagrant.configure("2") do |config|
 				echo '<h1>Tomcat#{i}</h1>' >> /usr/share/tomcat/webapps/1/index.html			
 
 				/etc/init.d/network restart
+				systemctl stop firewalld
 				systemctl enable tomcat
 				systemctl start tomcat
 			SHELL
